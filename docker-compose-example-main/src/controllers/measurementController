@@ -1,0 +1,63 @@
+// controllers/measurementController.js
+const measurementService = require('../services/measurementService');
+
+// Controlador para crear la tabla de mediciones
+const setupDatabase = async (req, res) => {
+    try {
+        await measurementService.setupDatabase();
+        res.status(200).send({ message: "Successfully created measurements table" });
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+};
+
+// Controlador para agregar una nueva medición
+const addMeasurement = async (req, res) => {
+    const { sensor_type, value } = req.body;
+
+    if (sensor_type !== 1 && sensor_type !== 2) {
+        return res.status(400).send({ message: "Invalid sensor type. Must be 1 (ozono) or 2 (temperatura)." });
+    }
+
+    if (value == null || isNaN(Number(value))) {
+        return res.status(400).send({ message: "Invalid value" });
+    }
+
+    try {
+        await measurementService.addMeasurement(sensor_type, value);
+        res.status(200).send({ message: "Successfully added measurement data" });
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+};
+
+// Controlador para obtener todas las mediciones
+const getMeasurements = async (req, res) => {
+    try {
+        const data = await measurementService.getMeasurements();
+        res.status(200).send(data);
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+};
+
+// Controlador para eliminar todas las mediciones
+const deleteMeasurements = async (req, res) => {
+    try {
+        await measurementService.deleteMeasurements();
+        res.status(200).send({ message: "All measurement data successfully deleted" });
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+};
+
+module.exports = {
+    setupDatabase,
+    addMeasurement,
+    getMeasurements,
+    deleteMeasurements
+};

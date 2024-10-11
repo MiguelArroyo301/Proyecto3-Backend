@@ -1,0 +1,13 @@
+// routes/measurementRoutes.js
+const express = require('express');
+const measurementController = require('../controllers/measurementController');
+
+const router = express.Router();
+
+// Definir rutas y asociarlas a los controladores
+router.get('/setup', measurementController.setupDatabase);
+router.post('/', measurementController.addMeasurement);
+router.get('/escribir', measurementController.getMeasurements);
+router.delete('/', measurementController.deleteMeasurements);
+
+module.exports = router;
